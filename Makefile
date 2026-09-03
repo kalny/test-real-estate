@@ -13,6 +13,9 @@ shell:
 migrate:
 	docker compose -f ./docker/docker-compose.yml exec -u www-data app php artisan migrate
 
+seed:
+	docker compose -f ./docker/docker-compose.yml exec -u www-data app php artisan db:seed --class=SupplierSeeder
+
 analyse:
 	docker compose -f ./docker/docker-compose.yml exec -u www-data app vendor/bin/phpstan analyse --memory-limit=512M
 
