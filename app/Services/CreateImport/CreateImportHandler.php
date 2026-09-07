@@ -25,6 +25,7 @@ class CreateImportHandler
             [
                 'status' => ImportStatus::Pending,
                 'payload' => $command->payload,
+                'total_offers' => count($command->payload['offers']),
                 'sent_at' => $command->sentAt,
             ],
         );

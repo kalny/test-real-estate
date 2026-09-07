@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\ProcessImport\ProcessImportHandler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -17,8 +18,8 @@ class ProcessImportJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(ProcessImportHandler $handler): void
     {
-        //
+        $handler->handle($this->importId);
     }
 }

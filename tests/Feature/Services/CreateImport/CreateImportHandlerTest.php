@@ -9,6 +9,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Bus;
 use Tests\Fixtures\ImportPayloadBuilder;
+use Tests\Fixtures\OfferPayloadBuilder;
 
 it('successfully created import', function () {
     Bus::fake();
@@ -37,6 +38,46 @@ it('successfully created import', function () {
         'supplier_id' => $supplier->id,
         'status' => ImportStatus::Pending,
         'external_import_id' => 'import-2026-09-01-001',
+        'total_offers' => 1,
+    ]);
+
+    Bus::assertDispatched(ProcessImportJob::class, function (ProcessImportJob $job) use ($import) {
+        return $job->importId === $import->id;
+    });
+});
+
+it('successfully created import with two offers', function () {
+    Bus::fake();
+
+    $supplier = Supplier::factory()->create([
+        'name' => 'test-supplier',
+    ]);
+
+    $payload = ImportPayloadBuilder::create()
+        ->withSupplier('test-supplier')
+        ->withOffers([
+            OfferPayloadBuilder::create()->build(),
+            OfferPayloadBuilder::create()->build(),
+        ])
+        ->withExternalImportId('import-2026-09-01-001')
+        ->build();
+
+    $command = new CreateImportCommand(
+        supplier: 'test-supplier',
+        externalImportId: 'import-2026-09-01-001',
+        payload: $payload,
+        sentAt: CarbonImmutable::now()
+    );
+
+    $handler = app(CreateImportHandler::class);
+
+    $import = $handler->handle($command);
+
+    $this->assertDatabaseHas('imports', [
+        'supplier_id' => $supplier->id,
+        'status' => ImportStatus::Pending,
+        'external_import_id' => 'import-2026-09-01-001',
+        'total_offers' => 2,
     ]);
 
     Bus::assertDispatched(ProcessImportJob::class, function (ProcessImportJob $job) use ($import) {

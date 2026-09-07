@@ -27,9 +27,23 @@ class PropertyPayloadBuilder
         return $this;
     }
 
+    public function withCode(string $code): self
+    {
+        $this->payload['code'] = $code;
+
+        return $this;
+    }
+
     public function withoutName(): self
     {
         unset($this->payload['name']);
+
+        return $this;
+    }
+
+    public function withName(string $name): self
+    {
+        $this->payload['name'] = $name;
 
         return $this;
     }

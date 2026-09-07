@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('check_out');
             $table->integer('max_guests');
             $table->integer('price');
+            $table->string('currency', 3);
             $table->integer('available_units');
             $table->dateTime('expires_at');
             $table->timestamps();

@@ -33,6 +33,13 @@ class OfferPayloadBuilder
         return $this;
     }
 
+    public function withExternalId(string $externalId): self
+    {
+        $this->payload['external_id'] = $externalId;
+
+        return $this;
+    }
+
     public function withoutProperty(): self
     {
         unset($this->payload['property']);
