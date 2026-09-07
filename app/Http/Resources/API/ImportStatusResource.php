@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Resources\API;
+
+use App\Models\Import;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * @mixin Import
+ */
+class ImportStatusResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'supplier' => $this->supplier->name,
+            'external_import_id' => $this->external_import_id,
+            'sent_at' => $this->sent_at,
+            'status' => $this->status->value,
+            'total_offers' => $this->total_offers,
+            'processed_offers' => $this->offers()->count(),
+            'error' => $this->error,
+            'created_at' => $this->created_at,
+            'completed_at' => $this->completed_at,
+        ];
+    }
+}

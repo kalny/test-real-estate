@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\ProcessImportJob;
+use App\Models\Offer;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Bus;
 use Tests\Fixtures\ImportPayloadBuilder;
@@ -236,3 +237,28 @@ it('rejects invalid import payload', function (array $payload, array $errors) {
         ['offers.0.expires_at'],
     ],
 ]);
+
+it('get import status', function () {
+    $offer = Offer::factory()->create();
+
+    $response = $this->getJson(route('imports.status', $offer->import_id));
+
+    $response
+        ->assertOk()
+        ->assertJsonStructure([
+            'data' => [
+                'id',
+                'supplier',
+                'external_import_id',
+                'sent_at',
+                'status',
+                'total_offers',
+                'processed_offers',
+                'error',
+                'created_at',
+                'completed_at',
+            ],
+        ]);
+
+    expect($response->json('data.processed_offers'))->toBe(1);
+});
