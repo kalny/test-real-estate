@@ -1,6 +1,9 @@
 build:
 	docker compose -f ./docker/docker-compose.yml build
 
+install:
+	docker compose -f ./docker/docker-compose.yml run --rm app composer install
+
 start:
 	docker compose -f ./docker/docker-compose.yml up -d --remove-orphans
 
@@ -9,6 +12,9 @@ stop:
 
 shell:
 	docker compose -f ./docker/docker-compose.yml exec -u www-data app bash
+
+key:
+	docker compose -f ./docker/docker-compose.yml exec -u www-data app php artisan key:generate
 
 migrate:
 	docker compose -f ./docker/docker-compose.yml exec -u www-data app php artisan migrate

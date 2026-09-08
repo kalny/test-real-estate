@@ -2,6 +2,8 @@
 
 ## Установка
 
+### Запуск з Docker
+
 При використанні Docker достатньо клонувати репозиторій та запустити контейнер. Застосунок буде доступний за адресою http://localhost:8081
 
 Якщо необхідно, замініть стандартний порт у `docker/.env`
@@ -13,29 +15,53 @@ cd test-real-estate
 
 cp .env.example .env
 
-# якщо необхідно, настройте підключення до БД
-nano .env
-
 cp docker/.env.example docker/.env
-
-# якщо необхідно, замініть порти за замовчуванням та налаштування з якими буде створено БД
-nano docker/.env
 
 # збілдити і запустити контейнери
 make build
+make install
 make start
+make key
 
 # міграції БД
 make migrate
 
-# phpstan
-make analyse
-
-# pint
-make format-test
+# сідер
+make seed
 
 # запуск тестів
 make test
+```
+
+### Запуск без Docker
+
+Якщо ви не використовуєте Docker, то необхідно вказати у файлі `.env` параметри підключення до MySQL та Redis
+
+```bash
+git clone https://github.com/kalny/test-real-estate.git
+
+cd test-real-estate
+
+cp .env.example .env
+
+# настройте підключення до БД та Redis
+nano .env
+
+composer install
+
+php artisan key:generate
+
+# міграції БД
+php artisan migrate
+
+# сідер
+php artisan db:seed --class=SupplierSeeder
+
+# запуск тестів
+php artisan test 
+
+# воркер
+php artisan queue:work
 ```
 
 ## Ідемпотентність та конкурентний доступ
